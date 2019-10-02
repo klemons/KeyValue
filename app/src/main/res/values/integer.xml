@@ -2,4 +2,5 @@
 <resources>
     <integer name="saved_high_score_default_key">0</integer>
     <integer name="saved_times_pressed_default_key">0</integer>
+    <integer name="current_Score">0</integer>
 </resources>

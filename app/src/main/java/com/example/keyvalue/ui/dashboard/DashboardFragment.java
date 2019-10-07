@@ -27,6 +27,8 @@ public class DashboardFragment extends Fragment {
     private boolean isTimerRunning;
     private CountDownTimer countDownTimer;
     public TextView textTime;
+    public int highScore;
+    public int newScore;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,27 +44,37 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        highScore = getResources().getInteger(R.integer.high_Score);
+        newScore = getResources().getInteger(R.integer.current_Score);
+
         Button button = root.findViewById(R.id.mash_button2);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int defaultScore;
+                int currentTimesPressed;
+                int newTimesPressed;
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 if (isTimerRunning) {
+                    defaultScore = getResources().getInteger(R.integer.current_Score);
+                    currentTimesPressed = sharedPref.getInt(getString(R.string.current_button_press_count_key), defaultScore);
 
+                    newTimesPressed = currentTimesPressed + 1;
+
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(getString(R.string.current_button_press_count_key), newTimesPressed);
+                    editor.commit();
+
+                    textView.setText("Button has been pressed " + Integer.toString(newTimesPressed) + " times!");
                 }
                 else {
+                    newTimesPressed = 0;
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(getString(R.string.current_button_press_count_key), newTimesPressed);
+                    editor.commit();
+                    textTime.setText("Timer started! You have ten seconds to beat the High Score!");
                     startTimer();
                 }
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                int currentScore = getResources().getInteger(R.integer.current_Score);
-                int timesPressed = sharedPref.getInt(getString(R.string.saved_button_press_count_key), currentScore);
-
-                int newTimesPressed = timesPressed + 1;
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(getString(R.string.saved_button_press_count_key), newTimesPressed);
-                editor.commit();
-
-                textView.setText("Button has been pressed " + Integer.toString(newTimesPressed) + " times!");
             }
         });
 
@@ -80,9 +92,19 @@ public class DashboardFragment extends Fragment {
             public void onFinish() {
                 isTimerRunning = false;
                 textTime.setText("Finished!");
+                checkHighScore();
             }
         }.start();
 
         isTimerRunning = true;
+    }
+
+    public void checkHighScore() {
+        if (newScore > highScore) {
+            highScore = newScore;
+            textTime.setText("You got the new High Score: " + Integer.toString(highScore) +"!");
+        }
+        else
+            textTime.setText("You did not get the new High Score!");
     }
 }

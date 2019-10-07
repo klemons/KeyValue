@@ -4,4 +4,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="saved_button_press_count_key">Notifications</string>
+    <string name="current_button_press_count_key">Notifications</string>
+    <string name="high_score">High Score</string>
 </resources>

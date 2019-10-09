@@ -100,6 +100,8 @@ public class DashboardFragment extends Fragment {
     }
 
     public void checkHighScore() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        newScore = sharedPref.getInt(getString(R.string.current_button_press_count_key), 0);
         if (newScore > highScore) {
             highScore = newScore;
             textTime.setText("You got the new High Score: " + Integer.toString(highScore) +"!");
